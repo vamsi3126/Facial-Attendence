@@ -1,7 +1,0 @@
-{
-  "name": "FaceAuth Attendance",
-  "description": "High-accuracy face recognition attendance system with Student and Admin portals.",
-  "requestFramePermissions": [
-    "camera"
-  ]
-}
