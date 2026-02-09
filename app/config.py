@@ -5,6 +5,10 @@ Environment variables can override defaults (e.g. DATABASE_URL, SECRET_KEY).
 import os
 from pathlib import Path
 
+# Set DeepFace home to /tmp to avoid permission errors on Vercel
+# This must be set before importing deepface
+os.environ["DEEPFACE_HOME"] = "/tmp"
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Security
@@ -28,9 +32,16 @@ else:
     DATABASE_URL = os.getenv("DATABASE_URL", f"sqlite+aiosqlite:///{BASE_DIR / 'attendance.db'}".replace("\\", "/"))
 
 # Paths
-UPLOAD_DIR = BASE_DIR / "uploads"
-EMBEDDINGS_DIR = BASE_DIR / "embeddings"
-EXPORTS_DIR = BASE_DIR / "exports"
+# On Vercel, we can only write to /tmp.
+if os.getenv("VERCEL"):
+    TEMP_DIR = Path("/tmp")
+    UPLOAD_DIR = TEMP_DIR / "uploads"
+    EMBEDDINGS_DIR = TEMP_DIR / "embeddings"
+    EXPORTS_DIR = TEMP_DIR / "exports"
+else:
+    UPLOAD_DIR = BASE_DIR / "uploads"
+    EMBEDDINGS_DIR = BASE_DIR / "embeddings"
+    EXPORTS_DIR = BASE_DIR / "exports"
 
 # Face recognition
 FACE_DETECTOR = "mtcnn"  # mtcnn | retinaface | opencv

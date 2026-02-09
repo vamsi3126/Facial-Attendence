@@ -34,7 +34,7 @@ async def mark_attendance_from_image(
     if img is None:
         raise HTTPException(status_code=400, detail="Could not decode image")
     day = attendance_date or date.today()
-    recognized = recognize_from_image(img)
+    recognized = await recognize_from_image(session, img)
     marked = await mark_recognized_and_fill_absent(session, recognized, day, source="image_upload")
     return {
         "date": str(day),

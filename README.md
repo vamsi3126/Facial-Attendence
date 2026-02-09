@@ -13,7 +13,7 @@ A high-accuracy, deep learning–based system that detects and recognizes multip
   - **Role-Based Auth**: Secure JWT authentication for Admin and Faculty.
 - **Database**:
   - **PostgreSQL (Supabase)**: User management, Student data, Attendance records.
-  - **pgvector**: Vector similarity search for face embeddings (optional but supported).
+  - **pgvector**: Vector similarity search for face embeddings (Required for Vercel deployment).
 
 ## Quick Start
 
@@ -41,16 +41,31 @@ python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 # Login with the credentials created in step 4.
 ```
 
-### 2. Enable pgvector (Optional)
+### 2. Enable pgvector (Required for Production/Vercel)
 
-To store face embeddings in the database instead of local files (recommended for production):
+To store face embeddings in the database (since Vercel file system is read-only):
 
 1.  Run the setup script in your SQL editor (e.g., Supabase SQL Editor):
     ```sql
     -- Copy contents from:
     scripts/setup_pgvector.sql
     ```
-2.  The application is configured to support the vector column (`app/models.py`).
+2.  The application uses `pgvector` to store and query embeddings efficiently.
+
+### 3. Vercel Deployment
+
+This project is configured for Vercel deployment.
+
+1.  **Environment Variables**: Set the following in Vercel Project Settings:
+    - `DATABASE_URL`: Your Supabase connection string (use `postgres://...` or `postgresql://...`).
+    - `SECRET_KEY`: A random secret string for JWT.
+
+2.  **Size Optimization**: The project uses `tensorflow-cpu` to stay within Vercel's serverless function size limits.
+
+3.  **Deploy**:
+    ```bash
+    vercel
+    ```
 
 ## Project Structure
 
