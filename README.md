@@ -4,107 +4,64 @@ A high-accuracy, deep learning–based system that detects and recognizes multip
 
 ## Features
 
-- **Multi-face detection & recognition** in one frame (MTCNN + FaceNet/DeepFace)
-- **Duplicate prevention**: one attendance mark per student per day
-- **Student registration** with multiple photo uploads; face embeddings stored
-- **Attendance output**: auto-generated Excel (.xlsx) with Student ID, Name, Date, Status
-- **Web dashboard**: registration, live/image upload, daily/monthly summary, charts
-- **Role-based login** (Admin / Faculty) – optional
-- **Deployment**: run locally or deploy to cloud (Vercel + Supabase, Render, AWS, Azure)
+- **Frontend (Web)**:
+  - **Teacher Login**: Capture Group Photo (Camera/Upload), View Attendance, Download Excel.
+  - **Director Login**: Capture Individual Photo (Camera/Upload), Add/Manage Students.
+  - **Camera Integration**: Built-in support for webcam capture.
+- **Backend (FastAPI)**:
+  - **Face Detection & Recognition**: MTCNN + FaceNet/DeepFace.
+  - **Role-Based Auth**: Secure JWT authentication for Admin and Faculty.
+- **Database**:
+  - **PostgreSQL (Supabase)**: User management, Student data, Attendance records.
+  - **pgvector**: Vector similarity search for face embeddings (optional but supported).
 
 ## Quick Start
 
-### Local Development with Supabase
+### 1. Local Development Setup
 
 ```powershell
 # 1. Install dependencies
 pip install -r requirements.txt
 
-# 2. Set Supabase connection (Windows PowerShell)
-$env:DATABASE_URL="postgresql://postgres:Vsvg%40face_attendace_db1@db.hgxxzjjvzkaaipxqlwej.supabase.co:5432/postgres"
+# 2. Set Database Connection
+# Create a .env file or set environment variable:
+$env:DATABASE_URL="postgresql+asyncpg://user:password@host:port/dbname"
 
-# Or use the setup script:
-.\setup_local.ps1
-
-# 3. Test connection
-python -m scripts.test_supabase_connection
-
-# 4. Initialize database tables
+# 3. Initialize Database
 python -m scripts.init_supabase_db
 
-# 5. Run server
+# 4. Create First Admin User
+python -m scripts.create_admin
+
+# 5. Run Server
 python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 
-# Open dashboard: http://localhost:8000
+# 6. Open Dashboard
+# http://localhost:8000
+# Login with the credentials created in step 4.
 ```
 
-### Using SQLite (Local Testing)
+### 2. Enable pgvector (Optional)
 
-```bash
-# Create virtual environment (recommended)
-python -m venv venv
-venv\Scripts\activate   # Windows
-# source venv/bin/activate  # Linux/Mac
+To store face embeddings in the database instead of local files (recommended for production):
 
-# Install dependencies
-pip install -r requirements.txt
-
-# Run backend (uses SQLite by default)
-python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-
-# Open dashboard: http://localhost:8000
-```
+1.  Run the setup script in your SQL editor (e.g., Supabase SQL Editor):
+    ```sql
+    -- Copy contents from:
+    scripts/setup_pgvector.sql
+    ```
+2.  The application is configured to support the vector column (`app/models.py`).
 
 ## Project Structure
 
 ```
 attendence system/
 ├── app/
-│   ├── main.py              # FastAPI app entry
-│   ├── config.py            # Settings
-│   ├── database.py          # SQLAlchemy + SQLite/PostgreSQL (Supabase)
-│   ├── models.py            # Student, Attendance, User
-│   ├── schemas.py           # Pydantic schemas
-│   ├── routers/
-│   │   ├── auth.py          # Login / roles
-│   │   ├── students.py      # Registration, list
-│   │   ├── attendance.py    # Mark attendance, reports
-│   │   └── reports.py       # Excel export
-│   ├── services/
-│   │   ├── face_engine.py   # Detection + recognition pipeline
-│   │   ├── attendance_service.py
-│   │   └── excel_export.py
-│   └── ml/
-│       ├── detector.py      # MTCNN wrapper
-│       └── recognizer.py    # DeepFace/FaceNet embeddings
-├── static/                  # Frontend assets
-├── templates/               # HTML (if using Jinja)
-├── uploads/                 # Student photos (gitignore)
-├── embeddings/              # Stored face vectors (gitignore)
-├── exports/                 # Generated Excel (gitignore)
-├── docs/
-│   ├── ARCHITECTURE.md      # System architecture
-│   ├── MODEL_EXPLANATION.md # DL models, loss, accuracy
-│   └── DEPLOYMENT.md        # Local & cloud deployment
-├── api/                 # Vercel serverless entry point
-│   └── index.py
-├── vercel.json          # Vercel configuration
-├── requirements.txt
-├── README.md
-├── VERCEL_DEPLOYMENT.md # Vercel + Supabase guide
-└── SUPABASE_SETUP.md    # Supabase database setup
+│   ├── routers/         # API Endpoints (Auth, Students, Attendance)
+│   ├── services/        # Business Logic (Face Engine, Excel)
+│   ├── models.py        # Database Models (User, Student, Attendance)
+│   └── ...
+├── static/              # Frontend (Login, Dashboard, Camera Logic)
+├── scripts/             # Setup Utilities (Init DB, Create Admin, pgvector)
+└── ...
 ```
-
-## Documentation
-
-- [Architecture](docs/ARCHITECTURE.md) – high-level design and data flow
-- [Model Explanation](docs/MODEL_EXPLANATION.md) – CNN/face detector & recognizer, loss, tuning
-- [Deployment](docs/DEPLOYMENT.md) – local run and cloud deployment
-- [Vercel + Supabase Deployment](VERCEL_DEPLOYMENT.md) – step-by-step guide for Vercel + Supabase
-- [Supabase Setup](SUPABASE_SETUP.md) – database connection and table creation
-- [Connection Setup](SETUP_CONNECTION.md) – quick guide for your Supabase connection string
-- [Accuracy Metrics](docs/MODEL_EXPLANATION.md#accuracy-evaluation) – Precision, Recall, F1
-
-## License
-
-Academic / educational use.

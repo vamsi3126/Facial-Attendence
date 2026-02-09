@@ -6,6 +6,7 @@ uvicorn[standard]==0.27.1
 sqlalchemy==2.0.25
 aiosqlite==0.19.0
 asyncpg==0.29.0  # PostgreSQL async driver for Supabase
+pgvector==0.2.4  # Vector similarity search for Postgres
 
 # AI/ML - Face Detection & Recognition
 opencv-python-headless==4.9.0.80

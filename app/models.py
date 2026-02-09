@@ -5,6 +5,7 @@ Student stores ID, name; face embeddings stored in files keyed by student_id.
 from datetime import date, datetime
 from sqlalchemy import Column, Integer, String, Date, DateTime, Boolean, ForeignKey, UniqueConstraint
 from sqlalchemy.orm import relationship
+from pgvector.sqlalchemy import Vector
 
 from app.database import Base
 
@@ -30,6 +31,9 @@ class Student(Base):
     student_id = Column(String(50), unique=True, index=True, nullable=False)  # e.g. "STU001"
     name = Column(String(255), nullable=False)
     # Path to folder: uploads/<student_id>/ and embeddings/<student_id>.npy
+    # For Supabase/Postgres:
+    embedding = Column(Vector(128)) 
+    
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 

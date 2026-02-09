@@ -12,19 +12,25 @@
 <body>
   <div class="app">
     <header class="header">
-      <h1>Facial Recognition Attendance</h1>
-      <p class="tagline">Classroom attendance with deep learning</p>
+      <div class="header-content">
+        <h1>Facial Recognition Attendance</h1>
+        <p class="tagline">Classroom attendance with deep learning</p>
+      </div>
+      <div class="user-controls">
+        <span id="user-role-display"></span>
+        <button id="btn-logout" class="btn-small">Log Out</button>
+      </div>
     </header>
 
     <nav class="tabs">
-      <button type="button" class="tab active" data-tab="register">Register Student</button>
-      <button type="button" class="tab" data-tab="mark">Mark Attendance</button>
-      <button type="button" class="tab" data-tab="records">Attendance Records</button>
-      <button type="button" class="tab" data-tab="reports">Reports & Export</button>
+      <button type="button" class="tab active" data-tab="register" id="tab-register">Register Student</button>
+      <button type="button" class="tab" data-tab="mark" id="tab-mark">Mark Attendance</button>
+      <button type="button" class="tab" data-tab="records" id="tab-records">Attendance Records</button>
+      <button type="button" class="tab" data-tab="reports" id="tab-reports">Reports & Export</button>
     </nav>
 
     <main class="content">
-      <!-- Register Student -->
+      <!-- Register Student (Director Only) -->
       <section id="panel-register" class="panel active">
         <h2>Student Registration</h2>
         <form id="form-register" class="card">
@@ -32,27 +38,52 @@
           <label>Full Name <input type="text" id="reg-name" placeholder="Student name" required /></label>
           <button type="submit">Create Student</button>
         </form>
+        
         <div class="card">
-          <h3>Upload photos (after creating student)</h3>
+          <h3>Capture / Upload Photos</h3>
+          <p class="hint">Use camera for individual photo or upload files.</p>
           <label>Student ID <input type="text" id="photo-student-id" placeholder="Same ID as above" /></label>
-          <label>Photos (one or more faces) <input type="file" id="photo-files" accept="image/*" multiple /></label>
+          
+          <div class="camera-controls">
+            <button type="button" id="btn-start-cam-reg">Open Camera</button>
+            <button type="button" id="btn-capture-reg" style="display:none;">Capture Photo</button>
+            <button type="button" id="btn-stop-cam-reg" style="display:none;">Close Camera</button>
+          </div>
+          <video id="video-reg" autoplay playsinline style="display:none; width: 100%; max-width: 400px; border-radius: 8px; margin: 10px 0;"></video>
+          <canvas id="canvas-reg" style="display:none;"></canvas>
+          
+          <div class="separator">OR</div>
+          
+          <label>Upload Photos <input type="file" id="photo-files" accept="image/*" multiple /></label>
           <button type="button" id="btn-upload-photos">Upload & Build Face Data</button>
           <p id="upload-status" class="status"></p>
         </div>
+
         <div class="card">
           <h3>Registered Students</h3>
           <ul id="student-list"></ul>
         </div>
       </section>
 
-      <!-- Mark Attendance -->
+      <!-- Mark Attendance (Teacher Only) -->
       <section id="panel-mark" class="panel">
         <h2>Mark Attendance</h2>
         <div class="card">
-          <p>Upload a classroom image or capture from camera. Recognized faces will be marked Present for today.</p>
+          <p>Capture a group photo of the classroom or upload an image.</p>
           <label>Date <input type="date" id="att-date" /></label>
-          <label>Image <input type="file" id="att-image" accept="image/*" /></label>
-          <button type="button" id="btn-mark-attendance">Mark Attendance from Image</button>
+          
+          <div class="camera-controls">
+            <button type="button" id="btn-start-cam-att">Open Camera</button>
+            <button type="button" id="btn-capture-att" style="display:none;">Capture Group Photo</button>
+            <button type="button" id="btn-stop-cam-att" style="display:none;">Close Camera</button>
+          </div>
+          <video id="video-att" autoplay playsinline style="display:none; width: 100%; max-width: 600px; border-radius: 8px; margin: 10px 0;"></video>
+          <canvas id="canvas-att" style="display:none;"></canvas>
+
+          <div class="separator">OR</div>
+
+          <label>Upload Image <input type="file" id="att-image" accept="image/*" /></label>
+          <button type="button" id="btn-mark-attendance">Mark Attendance</button>
           <p id="mark-status" class="status"></p>
           <div id="mark-result"></div>
         </div>
