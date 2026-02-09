@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Facial Recognition Attendance</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <h1>Facial Recognition Attendance</h1>
+      <p class="tagline">Classroom attendance with deep learning</p>
+    </header>
+
+    <nav class="tabs">
+      <button type="button" class="tab active" data-tab="register">Register Student</button>
+      <button type="button" class="tab" data-tab="mark">Mark Attendance</button>
+      <button type="button" class="tab" data-tab="records">Attendance Records</button>
+      <button type="button" class="tab" data-tab="reports">Reports & Export</button>
+    </nav>
+
+    <main class="content">
+      <!-- Register Student -->
+      <section id="panel-register" class="panel active">
+        <h2>Student Registration</h2>
+        <form id="form-register" class="card">
+          <label>Student ID <input type="text" id="reg-student-id" placeholder="e.g. STU001" required /></label>
+          <label>Full Name <input type="text" id="reg-name" placeholder="Student name" required /></label>
+          <button type="submit">Create Student</button>
+        </form>
+        <div class="card">
+          <h3>Upload photos (after creating student)</h3>
+          <label>Student ID <input type="text" id="photo-student-id" placeholder="Same ID as above" /></label>
+          <label>Photos (one or more faces) <input type="file" id="photo-files" accept="image/*" multiple /></label>
+          <button type="button" id="btn-upload-photos">Upload & Build Face Data</button>
+          <p id="upload-status" class="status"></p>
+        </div>
+        <div class="card">
+          <h3>Registered Students</h3>
+          <ul id="student-list"></ul>
+        </div>
+      </section>
+
+      <!-- Mark Attendance -->
+      <section id="panel-mark" class="panel">
+        <h2>Mark Attendance</h2>
+        <div class="card">
+          <p>Upload a classroom image or capture from camera. Recognized faces will be marked Present for today.</p>
+          <label>Date <input type="date" id="att-date" /></label>
+          <label>Image <input type="file" id="att-image" accept="image/*" /></label>
+          <button type="button" id="btn-mark-attendance">Mark Attendance from Image</button>
+          <p id="mark-status" class="status"></p>
+          <div id="mark-result"></div>
+        </div>
+      </section>
+
+      <!-- Attendance Records -->
+      <section id="panel-records" class="panel">
+        <h2>Attendance Records</h2>
+        <div class="card">
+          <label>Date <input type="date" id="records-date" /></label>
+          <button type="button" id="btn-load-records">Load Records</button>
+          <div class="table-wrap">
+            <table id="records-table">
+              <thead><tr><th>Student ID</th><th>Name</th><th>Status</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Daily Summary</h3>
+          <p id="summary-text">—</p>
+        </div>
+      </section>
+
+      <!-- Reports & Export -->
+      <section id="panel-reports" class="panel">
+        <h2>Export to Excel</h2>
+        <div class="card">
+          <h3>Single day</h3>
+          <label>Date <input type="date" id="export-date" /></label>
+          <a id="link-daily-export" href="#" class="btn" download>Download Daily Report (.xlsx)</a>
+        </div>
+        <div class="card">
+          <h3>Date range</h3>
+          <label>From <input type="date" id="export-from" /></label>
+          <label>To <input type="date" id="export-to" /></label>
+          <a id="link-range-export" href="#" class="btn" download>Download Range Report (.xlsx)</a>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="/static/app.js"></script>
+</body>
+</html>
